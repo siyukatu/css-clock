@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSSのanimationだけで描画される時計</title>
     <link rel="stylesheet" href="/time.css">
+    <meta name="canonical" href="https://css-clock.siyukatu.me/">
     <style>
         @keyframes slide {
             from { transform: translateY(0); }
             to { transform: translateY(-100%); }
+        }
+        @keyframes tick {
+            from { transform: translateX(-50%) rotate(0deg); }
+            to { transform: translateX(-50%) rotate(360deg); }
         }
         body {
             margin: 0;
@@ -18,56 +23,113 @@
             line-height: 1;
             > #time {
                 font-size: 1.5em;
-                > .day {
-                    display: flex;
-                    > .dow {
-                        font-size: 0.8em;
-                        height: calc(1em + 0.35em * 2);
-                        color: white;
-                        display: block;
-                        margin: auto 0.5em auto 0;
-                        overflow: hidden;
+                padding: 1em 1.2em;
+                background: #f0f0f0;
+                margin: auto auto 1em 1em;
+                display: flex;
+                > .clock {
+                    background: #fff;
+                    aspect-ratio: 1;
+                    width: 4em;
+                    border-radius: 50%;
+                    position: relative;
+                    &:before {
+                        content: "";
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 0.5em;
+                        height: 0.5em;
+                        background: #212121;
+                        border-radius: 50%;
+                        transform: translate(-50%, -50%);
+                        z-index: 10;
+                    }
+                    > .sticks {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 100%;
+                        height: 100%;
+                        transform: translate(-50%, -50%);
                         > div {
-                            display: flex;
-                            flex-direction: column;
-                            > div {
-                                height: 1em;
-                                padding: 0.35em 0.5em;
-                                background: #212121;
-                                color: #fff;
-                                margin-right: auto;
+                            position: absolute;
+                            bottom: 50%;
+                            left: 50%;
+                            background: #212121;
+                            transform-origin: bottom center;
+                            &.hour {
+                                width: 0.125em;
+                                height: 25%;
+                                animation: tick 43200s linear calc(-43200s - (mod(var(--time) / 3600000, 12) * 3600s)) infinite;
+                            }
+                            &.minute {
+                                width: 0.1em;
+                                height: 35%;
+                                animation: tick 3600s linear calc(-3600s - (mod(var(--time) / 60000, 60) * 60s)) infinite;
+                            }
+                            &.second {
+                                width: 0.05em;
+                                height: 40%;
+                                background: #e53935;
+                                animation: tick 60s linear calc(-60s - mod(var(--time) / 1000, 60) * 1s) infinite;
                             }
                         }
                     }
                 }
-                > .time {
-                    display: flex;
-                    margin-top: 0.2em;
-                    > .hours, .minutes, .seconds {
+                > .widget {
+                    margin: auto 0 0 1em;
+                    > .day {
                         display: flex;
-                        overflow: hidden;
-                        height: 1em;
-                        > div {
-                            display: flex;
-                            flex-direction: column;
-                            height: max-content;
+                        > .dow {
+                            font-size: 0.7em;
+                            height: calc(1em + 0.35em * 2);
+                            color: white;
+                            display: block;
+                            margin: 0 0 0.2em;
+                            overflow: hidden;
                             > div {
-                                height: 1em;
+                                display: flex;
+                                flex-direction: column;
+                                > div {
+                                    height: 1em;
+                                    padding: 0.35em 0.5em;
+                                    background: #212121;
+                                    color: #fff;
+                                    margin-right: auto;
+                                }
                             }
                         }
                     }
-                    > .dot {
-                        margin: auto 0.1em;
+                    > .time {
                         display: flex;
-                        flex-direction: column;
-                        &:before, &:after {
-                            content: "";
-                            display: block;
-                            width: 0.115em;
-                            height: 0.115em;
-                            background: currentColor;
-                            border-radius: 50%;
-                            margin: 0.125em 0;
+                        margin-top: 0.2em;
+                        > .hours, .minutes, .seconds {
+                            display: flex;
+                            overflow: hidden;
+                            height: 1em;
+                            > div {
+                                display: flex;
+                                flex-direction: column;
+                                height: max-content;
+                                > div {
+                                    height: 1em;
+                                }
+                            }
+                        }
+                        > .dot {
+                            margin: auto 0.1em;
+                            display: flex;
+                            flex-direction: column;
+                            &:before, &:after {
+                                content: "";
+                                display: block;
+                                width: 0.115em;
+                                height: 0.115em;
+                                background: currentColor;
+                                border-radius: 50%;
+                                margin: 0.125em 0;
+                            }
                         }
                     }
                 }
@@ -77,61 +139,73 @@
 </head>
 <body style="--time-offset:calc(9 * 60 * 60 * 1000)">
     <div id="time">
-        <div class="day">
-            <div class="dow">
-                <div style="animation: slide 604800s steps(7) calc(-604800s - (mod(var(--time) / 86400000, 7) - 3) * 86400s) infinite;">
-                    <div>日曜日</div>
-                    <div>月曜日</div>
-                    <div>火曜日</div>
-                    <div>水曜日</div>
-                    <div>木曜日</div>
-                    <div>金曜日</div>
-                    <div>土曜日</div>
-                </div>
+        <div class="clock">
+            <div class="sticks">
+                <div class="hour"></div>
+                <div class="minute"></div>
+                <div class="second"></div>
             </div>
         </div>
-        <div class="time">
-            <div class="hours">
-                <div style="animation: slide 86400s steps(24) calc(-86400s - mod(var(--time) / 3600000, 24) * 3600s) infinite;">
-                    <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
-                    <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
-                    <div>2</div><div>2</div><div>2</div><div>2</div>
-                </div>
-                <div style="animation: slide 86400s steps(24) calc(-86400s - mod(var(--time) / 3600000, 24) * 3600s) infinite;">
-                    <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
-                    <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
-                    <div>0</div><div>1</div><div>2</div><div>3</div>
-                </div>
-            </div>
-            <div class="dot"></div>
-            <div class="minutes">
-                <div style="animation: slide 3600s steps(60) calc(-3600s - mod(var(--time) / 60000, 60) * 60s) infinite;">
-                    <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
-                    <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
-                    <div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div>
-                    <div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div>
-                    <div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div>
-                    <div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div>
-                </div>
-                <div style="animation: slide 600s steps(10) calc(-600s - mod(var(--time) / 60000, 10) * 60s) infinite;">
-                    <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+        <div class="widget">
+            <div class="day">
+                <div class="dow">
+                    <div style="animation: slide 604800s steps(7) calc(-604800s - (mod(var(--time) / 86400000, 7) - 3) * 86400s) infinite;">
+                        <div>日曜日</div>
+                        <div>月曜日</div>
+                        <div>火曜日</div>
+                        <div>水曜日</div>
+                        <div>木曜日</div>
+                        <div>金曜日</div>
+                        <div>土曜日</div>
+                    </div>
                 </div>
             </div>
-            <div class="dot"></div>
-            <div class="seconds">
-                <div style="animation: slide 60s steps(60) calc(-60s - mod(var(--time) / 1000, 60) * 1s) infinite;">
-                    <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
-                    <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
-                    <div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div>
-                    <div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div>
-                    <div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div>
-                    <div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div>
+            <div class="time">
+                <div class="hours">
+                    <div style="animation: slide 86400s steps(24) calc(-86400s - mod(var(--time) / 3600000, 24) * 3600s) infinite;">
+                        <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
+                        <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
+                        <div>2</div><div>2</div><div>2</div><div>2</div>
+                    </div>
+                    <div style="animation: slide 86400s steps(24) calc(-86400s - mod(var(--time) / 3600000, 24) * 3600s) infinite;">
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                        <div>0</div><div>1</div><div>2</div><div>3</div>
+                    </div>
                 </div>
-                <div style="animation: slide 10s steps(10) calc(-10s - mod(var(--time) / 1000, 10) * 1s) infinite;">
-                    <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                <div class="dot"></div>
+                <div class="minutes">
+                    <div style="animation: slide 3600s steps(60) calc(-3600s - mod(var(--time) / 60000, 60) * 60s) infinite;">
+                        <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
+                        <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
+                        <div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div>
+                        <div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div>
+                        <div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div>
+                        <div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div>
+                    </div>
+                    <div style="animation: slide 600s steps(10) calc(-600s - mod(var(--time) / 60000, 10) * 60s) infinite;">
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                    </div>
+                </div>
+                <div class="dot"></div>
+                <div class="seconds">
+                    <div style="animation: slide 60s steps(60) calc(-60s - mod(var(--time) / 1000, 60) * 1s) infinite;">
+                        <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
+                        <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
+                        <div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div>
+                        <div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div>
+                        <div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div>
+                        <div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div>
+                    </div>
+                    <div style="animation: slide 10s steps(10) calc(-10s - mod(var(--time) / 1000, 10) * 1s) infinite;">
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        document.body.style.setProperty('--time', Date.now() + (9 * 60 * 60 * 1000));
+    </script>
 </body>
 </html>
