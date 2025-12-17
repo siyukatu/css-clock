@@ -3,7 +3,7 @@ export async function onRequest(context) {
   const path = url.pathname;
 
   if (path === "/time.css") {
-    return new Response(res, {
+    return new Response(`body{--time:calc(${Date.now()}+var(--time-offset,0))}`, {
       status: 200,
       headers: {
         "Content-Type": "text/css",
