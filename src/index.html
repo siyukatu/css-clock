@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSSのanimationだけで描画される時計</title>
+    <style>
+        @keyframes slide {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100%); }
+        }
+        body {
+            margin: 0;
+            display: flex;
+            height: 100svh;
+            font-family: sans-serif;
+            line-height: 1;
+            > #time {
+                font-size: 1.5em;
+                > .day {
+                    display: flex;
+                    > .dow {
+                        font-size: 0.8em;
+                        height: calc(1em + 0.35em * 2);
+                        color: white;
+                        display: block;
+                        margin: auto 0.5em auto 0;
+                        overflow: hidden;
+                        > div {
+                            display: flex;
+                            flex-direction: column;
+                            > div {
+                                height: 1em;
+                                padding: 0.35em 0.5em;
+                                background: #212121;
+                                color: #fff;
+                                margin-right: auto;
+                            }
+                        }
+                    }
+                }
+                > .time {
+                    display: flex;
+                    margin-top: 0.2em;
+                    > .hours, .minutes, .seconds {
+                        display: flex;
+                        overflow: hidden;
+                        height: 1em;
+                        > div {
+                            display: flex;
+                            flex-direction: column;
+                            height: max-content;
+                            > div {
+                                height: 1em;
+                            }
+                        }
+                    }
+                    > .dot {
+                        margin: auto 0.1em;
+                        display: flex;
+                        flex-direction: column;
+                        &:before, &:after {
+                            content: "";
+                            display: block;
+                            width: 0.115em;
+                            height: 0.115em;
+                            background: currentColor;
+                            border-radius: 50%;
+                            margin: 0.125em 0;
+                        }
+                    }
+                }
+            }
+        }
+    </style>
+</head>
+<body style="--time:{{time}};"><!-- timeの値だけサーバー側で動的に書き換えてます -->
+    <div id="time">
+        <div class="day">
+            <div class="dow">
+                <div style="animation:slide 604800s steps(7) calc(-604800s - (mod(var(--time) / 86400000, 7) - 3) * 86400s) infinite">
+                    <div>日曜日</div>
+                    <div>月曜日</div>
+                    <div>火曜日</div>
+                    <div>水曜日</div>
+                    <div>木曜日</div>
+                    <div>金曜日</div>
+                    <div>土曜日</div>
+                </div>
+            </div>
+        </div>
+        <div class="time">
+            <div class="hours">
+                <div style="animation:slide 86400s steps(24) calc(-86400s - mod(var(--time) / 3600000, 24) * 3600s) infinite">
+                    <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
+                    <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
+                    <div>2</div><div>2</div><div>2</div><div>2</div>
+                </div>
+                <div style="animation:slide 86400s steps(24) calc(-86400s - mod(var(--time) / 3600000, 24) * 3600s) infinite">
+                    <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                    <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                    <div>0</div><div>1</div><div>2</div><div>3</div>
+                </div>
+            </div>
+            <div class="dot"></div>
+            <div class="minutes">
+                <div style="animation:slide 3600s steps(60) calc(-3600s - mod(var(--time) / 60000, 60) * 60s) infinite">
+                    <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
+                    <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
+                    <div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div>
+                    <div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div>
+                    <div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div>
+                    <div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div>
+                </div>
+                <div style="animation:slide 600s steps(10) calc(-600s - mod(var(--time) / 60000, 10) * 60s) infinite">
+                    <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                </div>
+            </div>
+            <div class="dot"></div>
+            <div class="seconds">
+                <div style="animation:slide 60s steps(60) calc(-60s - mod(var(--time) / 1000, 60) * 1s) infinite">
+                    <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
+                    <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
+                    <div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div><div>2</div>
+                    <div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div><div>3</div>
+                    <div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div><div>4</div>
+                    <div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div><div>5</div>
+                </div>
+                <div style="animation:slide 10s steps(10) calc(-10s - mod(var(--time) / 1000, 10) * 1s) infinite">
+                    <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
