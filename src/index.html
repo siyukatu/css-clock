@@ -61,24 +61,21 @@
                             &.hour {
                                 width: 0.125em;
                                 height: 25%;
-                                animation: tick 43200s linear calc(-43200s - (mod(var(--time) / 3600000, 12) * 3600s)) infinite;
                             }
                             &.minute {
                                 width: 0.1em;
                                 height: 35%;
-                                animation: tick 3600s linear calc(-3600s - (mod(var(--time) / 60000, 60) * 60s)) infinite;
                             }
                             &.second {
                                 width: 0.05em;
                                 height: 40%;
                                 background: #e53935;
-                                animation: tick 60s linear calc(-60s - mod(var(--time) / 1000, 60) * 1s) infinite;
                             }
                         }
                     }
                 }
                 > .widget {
-                    margin: 0 0 0 1em;
+                    margin: auto 0 auto 1em;
                     > .day {
                         display: flex;
                         > .dow {
@@ -141,9 +138,9 @@
     <div id="time">
         <div class="clock">
             <div class="sticks">
-                <div class="hour"></div>
-                <div class="minute"></div>
-                <div class="second"></div>
+                <div class="hour" style="animation:tick 43200s linear calc(-43200s - (mod(var(--time) / 3600000, 12) * 3600s)) infinite"></div>
+                <div class="minute" style="animation:tick 3600s linear calc(-3600s - (mod(var(--time) / 60000, 60) * 60s)) infinite"></div>
+                <div class="second" style="animation:tick 60s linear calc(-60s - mod(var(--time) / 1000, 60) * 1s) infinite"></div>
             </div>
         </div>
         <div class="widget">
