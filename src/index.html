@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSSのanimationだけで描画される時計</title>
+    <link rel="stylesheet" href="/time.css">
     <style>
         @keyframes slide {
             from { transform: translateY(0); }
@@ -74,7 +75,7 @@
         }
     </style>
 </head>
-<body style="--time:calc({{time}} + (9 * 60 * 60 * 1000));">
+<body style="--time-offset:calc(9 * 60 * 60 * 1000)">
     <div id="time">
         <div class="day">
             <div class="dow">
