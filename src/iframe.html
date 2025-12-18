@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<!--
+    免責事項
+    このウェブサイトは、siyukatu(以下「著者」)が思いつきで作成し、公開しているものです。
+    このウェブサイトのソースコードを読み進めることで、あなたは以下の事項に同意したものとみなされます。
+
+    1. このソースコードを読んだことにより生じた体調不良、また、その他のいかなる損害についても、著者は一切の責任を負いません。
+
+    Copyright (c) 2025-present siyukatu.me
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="canonical" href="https://css-clock.siyukatu.me/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSSだけでうごく時計</title>
+    <meta name="robots" content="noindex">
+    <meta name="description" content="CSSだけでうごく時計です。">
+    <meta name="author" content="siyukatu">
+    <meta property="og:title" content="CSSだけでうごく時計">
+    <meta property="og:description" content="CSSだけでうごく時計です。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://css-clock.siyukatu.me/">
+    <meta property="og:site_name" content="CSSだけでうごく時計">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="fediverse:creator" content="@siyukatu@mastodon.social">
+    <meta name="twitter:creator" content="@siyukat">
+    <meta name="twitter:site" content="@siyukat">
+    <link rel="preconnect" href="https://css-clock.pages.dev/">
+    <link rel="stylesheet" href="https://css-clock.pages.dev/time.css?step=1">
+    <link rel="stylesheet" href="https://css-clock.pages.dev/time.css?step=2">
+    <link rel="stylesheet" href="https://css-clock.pages.dev/time.css?step=3">
+    <link rel="stylesheet" href="https://css-clock.pages.dev/time.css?step=4">
+    <link rel="stylesheet" href="https://css-clock.pages.dev/time.css?step=5">
+    <style>
+        @keyframes slide {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100%); }
+        }
+        @keyframes tick {
+            from { transform: translateX(-50%) rotate(0deg); }
+            to { transform: translateX(-50%) rotate(360deg); }
+        }
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-size: 16px;
+            font-family: sans-serif;
+            line-height: 1;
+            overflow: hidden;
+            > #time {
+                font-size: 1.5em;
+                padding: 1em 1.2em;
+                background: #f0f0f0;
+                display: flex;
+                height: 6em;
+                width: 12.4em;
+                box-sizing: border-box;
+                overflow: hidden;
+                > .clock {
+                    background: #fff;
+                    aspect-ratio: 1;
+                    width: 4em;
+                    border-radius: 50%;
+                    position: relative;
+                    &:before {
+                        content: "";
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 0.5em;
+                        height: 0.5em;
+                        background: #212121;
+                        border-radius: 50%;
+                        transform: translate(-50%, -50%);
+                        z-index: 10;
+                    }
+                    > .sticks {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 100%;
+                        height: 100%;
+                        transform: translate(-50%, -50%);
+                        > div {
+                            position: absolute;
+                            bottom: 50%;
+                            left: 50%;
+                            background: #212121;
+                            transform-origin: bottom center;
+                            &.hour {
+                                width: 0.125em;
+                                height: 25%;
+                            }
+                            &.minute {
+                                width: 0.1em;
+                                height: 35%;
+                            }
+                            &.second {
+                                width: 0.05em;
+                                height: 40%;
+                                background: #e53935;
+                            }
+                        }
+                    }
+                }
+                > .widget {
+                    margin: auto 0 auto auto;
+                    > .day {
+                        display: flex;
+                        > .dow {
+                            font-size: 0.7em;
+                            height: calc(1em + 0.35em * 2);
+                            color: white;
+                            display: block;
+                            margin: 0 0 0.2em;
+                            overflow: hidden;
+                            > div {
+                                display: flex;
+                                flex-direction: column;
+                                > div {
+                                    height: 1em;
+                                    padding: 0.35em 0.5em;
+                                    background: #212121;
+                                    color: #fff;
+                                    margin-right: auto;
+                                }
+                            }
+                        }
+                    }
+                    > .time {
+                        display: flex;
+                        margin-top: 0.2em;
+                        > .hours, .minutes, .seconds {
+                            display: flex;
+                            overflow: hidden;
+                            height: 1em;
+                            > div {
+                                display: flex;
+                                flex-direction: column;
+                                height: max-content;
+                                > div {
+                                    height: 1em;
+                                }
+                            }
+                        }
+                        > .dot {
+                            margin: auto 0.1em;
+                            display: flex;
+                            flex-direction: column;
+                            &:before, &:after {
+                                content: "";
+                                display: block;
+                                width: 0.115em;
+                                height: 0.115em;
+                                background: currentColor;
+                                border-radius: 50%;
+                                margin: 0.125em 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </style>
+</head>
+<body style="--time-offset:calc(9 * 60 * 60 * 1000)">
+    <div id="time">
+        <div class="clock">
+            <div class="sticks">
+                <div class="hour" style="animation:tick 43200s linear calc(-43200s - (mod(var(--time) / 3600000, 12) * 3600s)) infinite"></div>
+                <div class="minute" style="animation:tick 3600s linear calc(-3600s - (mod(var(--time) / 60000, 60) * 60s)) infinite"></div>
+                <div class="second" style="animation:tick 60s linear calc(-60s - mod(var(--time) / 1000, 60) * 1s) infinite"></div>
+            </div>
+        </div>
+        <div class="widget">
+            <div class="day">
+                <div class="dow">
+                    <div style="animation: slide 604800s steps(7) calc(-604800s - (mod(var(--time) / 86400000, 7) - 3) * 86400s) infinite;">
+                        <div>日曜日</div>
+                        <div>月曜日</div>
+                        <div>火曜日</div>
+                        <div>水曜日</div>
+                        <div>木曜日</div>
+                        <div>金曜日</div>
+                        <div>土曜日</div>
+                    </div>
+                </div>
+            </div>
+            <div class="time">
+                <div class="hours">
+                    <div style="animation: slide 86400s steps(24) calc(-86400s - mod(var(--time) / 3600000, 24) * 3600s) infinite;">
+                        <div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div>
+                        <div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div><div>1</div>
+                        <div>2</div><div>2</div><div>2</div><div>2</div>
+                    </div>
+                    <div style="animation: slide 86400s steps(24) calc(-86400s - mod(var(--time) / 3600000, 24) * 3600s) infinite;">
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                        <div>0</div><div>1</div><div>2</div><div>3</div>
+                    </div>
+                </div>
+                <div class="dot"></div>
+                <div class="minutes">
+                    <div style="animation: slide 3600s steps(6) calc(-3600s - mod(var(--time) / 60000, 60) * 60s) infinite;">
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div>
+                    </div>
+                    <div style="animation: slide 600s steps(10) calc(-600s - mod(var(--time) / 60000, 10) * 60s) infinite;">
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                    </div>
+                </div>
+                <div class="dot"></div>
+                <div class="seconds">
+                    <div style="animation: slide 60s steps(6) calc(-60s - mod(var(--time) / 1000, 60) * 1s) infinite;">
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div>
+                    </div>
+                    <div style="animation: slide 10s steps(10) calc(-10s - mod(var(--time) / 1000, 10) * 1s) infinite;">
+                        <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
