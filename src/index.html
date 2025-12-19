@@ -43,9 +43,14 @@
         body {
             margin: 0;
             display: flex;
+            flex-direction: column;
             height: 100svh;
             font-family: sans-serif;
             line-height: 1;
+            .message {
+                margin: 0.5em;
+                line-height: 1.5;
+            }
             > #time {
                 font-size: 1.5em;
                 padding: 1em 1.2em;
@@ -160,6 +165,20 @@
     </style>
 </head>
 <body style="--time-offset:calc(9 * 60 * 60 * 1000)">
+    <noscript>
+        <div class="message">
+            JavaScript無しでも動いてるでしょ？
+        </div>
+        <style>
+            .noscript-suggest {
+                display: none;
+            }
+        </style>
+    </noscript>
+    <div class="message noscript-suggest">
+        JavaScriptが無くても動く時計です。<br>
+        試しにJavaScriptを無効にしてみて
+    </div>
     <div id="time">
         <div class="clock">
             <div class="sticks">
